@@ -5,7 +5,7 @@ import 'tugas_model.dart';
 
 // Foto ilustrasi suasana belajar, berlisensi CC0 (Wikimedia Commons).
 const fotoMejaBelajar =
-    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Laptop_picture_with_notepad.jpg?width=960';
+    'https://commons.wikimedia.org/wiki/Special:FilePath/Laptop_picture_with_notepad.jpg?width=960';
 
 enum FilterTugas { semua, aktif, selesai }
 
