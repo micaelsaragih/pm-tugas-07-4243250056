@@ -3,6 +3,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'tugas_model.dart';
 
+// Foto ilustrasi suasana belajar, berlisensi CC0 (Wikimedia Commons).
+const fotoMejaBelajar =
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Laptop_picture_with_notepad.jpg?width=960';
+
 enum FilterTugas { semua, aktif, selesai }
 
 class HalamanDaftar extends StatefulWidget {
@@ -26,6 +30,55 @@ class _HalamanDaftarState extends State<HalamanDaftar> {
         onPressed: () => context.push('/tambah'),
         icon: const Icon(Icons.add), label: const Text('Tambah Tugas')),
       body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: SizedBox(
+              height: 150,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    fotoMejaBelajar,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        ColoredBox(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: const Center(
+                        child: Icon(Icons.menu_book_outlined, size: 76),
+                      ),
+                    ),
+                  ),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [Colors.black.withValues(alpha: 0.74),
+                          Colors.transparent],
+                      ),
+                    ),
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        'Atur tugas, raih target.',
+                        style: TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         SizedBox(height: 66, child: ListView(scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           children: [
