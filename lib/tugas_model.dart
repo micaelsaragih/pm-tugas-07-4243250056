@@ -1,5 +1,7 @@
 import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
+
 import 'tugas_kuliah.dart';
 
 class TugasModel extends ChangeNotifier {
@@ -10,13 +12,27 @@ class TugasModel extends ChangeNotifier {
   int get jumlahTotal => _tugas.length;
   int get jumlahSelesai => _tugas.where((t) => t.selesai).length;
   int get jumlahAktif => jumlahTotal - jumlahSelesai;
-  double get persentaseSelesai => jumlahTotal == 0 ? 0 : jumlahSelesai / jumlahTotal * 100;
+  double get persentaseSelesai =>
+      jumlahTotal == 0 ? 0 : jumlahSelesai / jumlahTotal * 100;
 
-  void tambah({required String judul, required String mataKuliah, required DateTime tenggat}) {
+  void tambah({
+    required String judul,
+    required String mataKuliah,
+    required DateTime tenggat,
+  }) {
     final j = judul.trim();
     final m = mataKuliah.trim();
-    if (j.isEmpty || m.isEmpty) throw ArgumentError('Judul dan mata kuliah tidak boleh kosong');
-    _tugas.add(TugasKuliah(id: _idBerikutnya++, judul: j, mataKuliah: m, tenggat: tenggat));
+    if (j.isEmpty || m.isEmpty) {
+      throw ArgumentError('Judul dan mata kuliah tidak boleh kosong');
+    }
+    _tugas.add(
+      TugasKuliah(
+        id: _idBerikutnya++,
+        judul: j,
+        mataKuliah: m,
+        tenggat: tenggat,
+      ),
+    );
     _tugas.sort((a, b) => a.tenggat.compareTo(b.tenggat));
     notifyListeners();
   }

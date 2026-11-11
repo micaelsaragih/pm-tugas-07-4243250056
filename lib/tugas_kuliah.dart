@@ -13,7 +13,10 @@ class TugasKuliah {
   final bool selesai;
 
   TugasKuliah salin({bool? selesai}) => TugasKuliah(
-    id: id, judul: judul, mataKuliah: mataKuliah,
-    tenggat: tenggat, selesai: selesai ?? this.selesai,
+    id: id,
+    judul: judul,
+    mataKuliah: mataKuliah,
+    tenggat: tenggat,
+    selesai: selesai ?? this.selesai,
   );
 }

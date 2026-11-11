@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+
 import 'tugas_model.dart';
 import 'halaman_daftar.dart';
 
@@ -9,6 +10,7 @@ class HalamanTambah extends StatefulWidget {
   @override
   State<HalamanTambah> createState() => _HalamanTambahState();
 }
+
 class _HalamanTambahState extends State<HalamanTambah> {
   late final TextEditingController _judul;
   late final TextEditingController _mataKuliah;
@@ -31,9 +33,12 @@ class _HalamanTambahState extends State<HalamanTambah> {
   }
 
   Future<void> _pilihTanggal() async {
-    final hasil = await showDatePicker(context: context,
+    final hasil = await showDatePicker(
+      context: context,
       initialDate: _tenggat,
-      firstDate: DateTime(2020), lastDate: DateTime(2100));
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
     if (!mounted || hasil == null) return;
     setState(() => _tenggat = hasil);
   }
@@ -41,33 +46,62 @@ class _HalamanTambahState extends State<HalamanTambah> {
   void _simpan() {
     if (!_formKey.currentState!.validate()) return;
     context.read<TugasModel>().tambah(
-      judul: _judul.text, mataKuliah: _mataKuliah.text, tenggat: _tenggat);
+      judul: _judul.text,
+      mataKuliah: _mataKuliah.text,
+      tenggat: _tenggat,
+    );
     context.pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: const Text('Tambah Tugas')),
-      body: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 620),
-        child: Form(key: _formKey,
-          child: ListView(padding: const EdgeInsets.all(20), children: [
-            TextFormField(controller: _judul, decoration: const InputDecoration(
-              labelText: 'Judul tugas', border: OutlineInputBorder()),
-              validator: (v) => (v?.trim().isEmpty ?? true) ? 'Judul wajib diisi' : null),
-            const SizedBox(height: 16),
-            TextFormField(controller: _mataKuliah, decoration: const InputDecoration(
-              labelText: 'Mata kuliah', border: OutlineInputBorder()),
-              validator: (v) => (v?.trim().isEmpty ?? true) ? 'Mata kuliah wajib diisi' : null),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(onPressed: _pilihTanggal,
-              icon: const Icon(Icons.event),
-              label: Text('Tenggat: ${tanggal(_tenggat)}')),
-            const SizedBox(height: 24),
-            FilledButton.icon(onPressed: _simpan,
-              icon: const Icon(Icons.save_outlined), label: const Text('Simpan tugas')),
-          ]),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tambah Tugas')),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 620),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                TextFormField(
+                  controller: _judul,
+                  decoration: const InputDecoration(
+                    labelText: 'Judul tugas',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) =>
+                      (v?.trim().isEmpty ?? true) ? 'Judul wajib diisi' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _mataKuliah,
+                  decoration: const InputDecoration(
+                    labelText: 'Mata kuliah',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) => (v?.trim().isEmpty ?? true)
+                      ? 'Mata kuliah wajib diisi'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: _pilihTanggal,
+                  icon: const Icon(Icons.event),
+                  label: Text('Tenggat: ${tanggal(_tenggat)}'),
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  onPressed: _simpan,
+                  icon: const Icon(Icons.save_outlined),
+                  label: const Text('Simpan tugas'),
+                ),
+              ],
+            ),
+          ),
         ),
-      )),
+      ),
     );
   }
 }
