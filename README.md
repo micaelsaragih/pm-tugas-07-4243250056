@@ -1,12 +1,12 @@
 # Tugas Rutin 7 — Planner Tugas Kuliah
 
-**Micael Zecsen Saragih | 4243250056 | PSIK24D | Ilmu Komputer UNIMED**
+**Micael Zecsen Saragih | NIM 4243250056 | PSIK 24 D | Ilmu Komputer UNIMED**
 
 Aplikasi Flutter Planner Tugas Kuliah untuk mengelola judul tugas, mata kuliah, tenggat, dan status selesai. Menggunakan **Provider/ChangeNotifier** sebagai app state dan **setState** untuk filter halaman daftar. Tidak mengirim data ke backend atau melakukan penyimpanan permanen.
 
 ## Fitur
 - Daftar tugas dengan filter Semua, Aktif, Selesai (FilterChip).
-- Banner foto ruang belajar pada halaman daftar dan statistik, dilengkapi fallback ikon saat jaringan tidak tersedia.
+- Dua banner foto tersimpan lokal di `assets/images/` dan dilengkapi fallback ikon jika aset tidak ditemukan.
 - Form tambah tugas dengan validasi dan pemilih tanggal.
 - Menandai selesai dan menghapus tugas.
 - Statistik total, selesai, aktif dan persentase otomatis.
@@ -35,11 +35,97 @@ Pada initState, dua TextEditingController dibuat untuk menampung judul dan nama 
 
 Daftar tugas merupakan state bersama karena halaman daftar, statistik, dan badge navigasi membutuhkan data yang konsisten. Saya memilih Provider dengan ChangeNotifier agar logika tambah, tandai selesai, dan hapus dipisahkan dari tampilan, tetapi tetap mudah dipahami pada skala tugas kuliah. notifyListeners memberi tahu widget yang mendengarkan perubahan. Halaman statistik menggunakan context.watch untuk memperoleh data terbaru, sedangkan badge memakai context.select agar memantau jumlah tugas aktif saja. Pemisahan ini membuat kode lebih terstruktur dan logika dapat diuji melalui unit test tanpa memerlukan antarmuka Flutter.
 
-## Foto dan sumber
+## Foto dan Sumber
 
-Halaman **Daftar** menggunakan ilustrasi meja belajar karya Eric Bailey; halaman **Statistik** menggunakan foto laptop di meja karya Radek Grzybowski. Keduanya diambil dari Wikimedia Commons dan berlisensi CC0 1.0. Tautan asli dan detail penggunaan tercatat di [docs/KREDIT_FOTO.md](docs/KREDIT_FOTO.md).
+Kedua foto ilustrasi ruang belajar telah disimpan sebagai **aset lokal** dan didaftarkan melalui `pubspec.yaml`. Halaman Daftar menggunakan `assets/images/banner_daftar.jpg` (karya Eric Bailey), sedangkan halaman Statistik menggunakan `assets/images/banner_statistik.jpg` (karya Radek Grzybowski). Keduanya dicatat sebagai CC0 1.0 dalam [dokumen kredit foto](docs/KREDIT_FOTO.md). Banner ditampilkan melalui `Image.asset`, `BoxFit.cover`, overlay gradasi, dan fallback ikon; tampilan tidak lagi memerlukan jaringan untuk mengunduh gambar.
 
-**Catatan:** Foto ditampilkan lewat `Image.network`, bukan aset JPG lokal, sehingga membutuhkan akses ke Wikimedia Commons. Ketika foto gagal dimuat, ikon cadangan akan muncul. Gambar ini bersifat ilustratif dan tidak memengaruhi proses mengelola tugas.
+## Dokumentasi Hasil Praktikum
+
+Semua gambar berikut berasal dari screenshot yang sudah diunggah ke folder `docs/`. Data tugas pada screenshot digunakan sebagai **contoh untuk demonstrasi**, bukan daftar tenggat resmi mata kuliah.
+
+### 01. Daftar Tugas
+Halaman utama berisi kartu tugas, filter, banner ilustrasi, status selesai, dan tombol tambah.
+
+![01 - Daftar Tugas](docs/01-daftar-tugas.png)
+
+### 02. Form Tambah Tugas
+Form pengisian judul, mata kuliah, dan tenggat dengan validasi input.
+
+![02 - Form Tambah Tugas](docs/02-form-tambah.png)
+
+### 03. Pemilihan Tenggat (DatePicker)
+Dialog kalender untuk memilih tanggal tenggat, dengan pembaruan state lokal.
+
+![03 - DatePicker](docs/03-date-picker.png)
+
+### 04. Filter Status Tugas
+Hasil penerapan `FilterChip` untuk status Semua, Aktif, dan Selesai.
+
+![04 - Filter Status Tugas](docs/04-filter-tugas.png)
+
+### 05. Statistik Penyelesaian
+Jumlah tugas total, selesai, aktif, serta progress bar persentase yang dihitung dari data model.
+
+![05 - Statistik Tugas](docs/05-statistik-tugas.png)
+
+### 06. Bukti Implementasi State Management
+Tiga screenshot kode berikut memperlihatkan perbedaan **state lokal** dan **state bersama**.
+
+**6.1 — Deklarasi state lokal:** `FilterTugas` dan `_filter` dalam `StatefulWidget`.
+
+![06-1 - State Lokal](docs/06-1-state-lokal.png)
+
+**6.2 — Pemanggilan `setState()`:** perubahan filter melalui `onSelected` pada `FilterChip`.
+
+![06-2 - setState](docs/06-2-setstate.png)
+
+**6.3 — Pengelola state bersama:** `TugasModel extends ChangeNotifier`; pemanggilan `notifyListeners()` terdapat dalam metode tambah, tandai selesai, dan hapus di [`lib/tugas_model.dart`](lib/tugas_model.dart).
+
+![06-3 - ChangeNotifier](docs/06-3-changenotifier.png)
+
+### 07. Bukti Analisis dan Pengujian
+Screenshot terminal `flutter analyze` dan `flutter test` dari komputer mahasiswa.
+
+![07 - Flutter Analyze dan Test](docs/07-analyze-test.png)
+
+## Pengujian
+
+Unit test dalam `test/tugas_model_test.dart` memeriksa tiga skenario:
+1. Menambah tugas memperbarui jumlah total dan tugas aktif.
+2. Menandai tugas selesai memperbarui persentase.
+3. Menghapus tugas mengurangi jumlah total tanpa menghapus tugas lain.
+
+Hasil perintah pada komputer mahasiswa didokumentasikan dalam screenshot nomor 07. Repository ini telah diperiksa untuk keberadaan source, aset, dan bukti, **bukan** dijalankan ulang dengan Flutter SDK melalui GitHub.
+
+## Struktur Project
+
+```text
+pm-tugas-07-4243250056/
+├── lib/
+│   ├── main.dart
+│   ├── tugas_kuliah.dart
+│   ├── tugas_model.dart
+│   ├── halaman_daftar.dart
+│   ├── halaman_tambah.dart
+│   └── halaman_statistik.dart
+├── assets/images/
+│   ├── banner_daftar.jpg
+│   └── banner_statistik.jpg
+├── test/tugas_model_test.dart
+├── docs/
+│   ├── 01-daftar-tugas.png
+│   ├── 02-form-tambah.png
+│   ├── 03-date-picker.png
+│   ├── 04-filter-tugas.png
+│   ├── 05-statistik-tugas.png
+│   ├── 06-1-state-lokal.png
+│   ├── 06-2-setstate.png
+│   ├── 06-3-changenotifier.png
+│   ├── 07-analyze-test.png
+│   └── KREDIT_FOTO.md
+├── pubspec.yaml
+└── README.md
+```
 
 ## Cara menjalankan
 
@@ -52,7 +138,7 @@ flutter run -d chrome
 
 Jika folder platform Flutter belum tersedia, jalankan satu kali: `flutter create --org id.ac.unimed --project-name pm_tugas_07_4243250056 .` sebelum `flutter run`.
 
-Screenshot halaman daftar, form, statistik dan hasil pengujian harus dibuat dari aplikasi yang benar-benar berjalan di laptop. Source belum diuji ulang pada mesin pengembang setelah penambahan banner foto.
+Seluruh screenshot tugas sudah tersedia dan ditampilkan pada bagian dokumentasi di atas. Untuk lingkungan Flutter Web yang mengalami kendala koneksi ke CDN/debugger, mode release dengan aset web lokal dapat dicoba menggunakan `flutter run -d chrome --release --no-web-resources-cdn` (jika opsi didukung versi Flutter).
 
 ## Pernyataan AI
 
